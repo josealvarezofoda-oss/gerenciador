@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Treino;
 use App\Models\Aluno;
 use Illuminate\Http\Request;
 
@@ -57,5 +58,10 @@ class AlunoController extends Controller
     {
         $aluno->delete();
         return redirect()->route('alunos.index');
+    }
+    public function meusTreinos()
+    {
+        $treinos = auth()->user()->treinos;
+        return view('aluno.treinos.index', compact('treinos'));
     }
 }

@@ -12,7 +12,7 @@ use Illuminate\View\View;
 class AuthenticatedSessionController extends Controller
 {
     /**
-     * Display the login view.
+     * Exibe a view de login
      */
     public function create(): View
     {
@@ -20,28 +20,50 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Handle an incoming authentication request.
+     * Faz a autenticação do usuário
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        // Autentica o usuário
         $request->authenticate();
 
+        // Regenera a sessão para segurança
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Redireciona conforme o tipo de usuário
+        return $this->authenticated($request, Auth::user());
     }
 
     /**
-     * Destroy an authenticated session.
+     * Faz logout do usuário
      */
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    /**
+     * Redireciona o usuário conforme o tipo_usuario
+     */
+    protected function authenticated(Request $request, $user): RedirectResponse
+    {
+        // Usa o campo correto: tipo_usuario
+        if ($user->tipo_usuario === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+
+        if ($user->tipo_usuario === 'aluno') {
+            return redirect()->route('aluno.dashboard');
+        }
+
+        // Caso o tipo não seja reconhecido
+        Auth::logout();
+        return redirect('/')
+            ->withErrors(['tipo' => 'Tipo de usuário inválido.']);
     }
 }
