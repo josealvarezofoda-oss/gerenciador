@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'tipo_usuario',
     ];
 
     /**
@@ -45,4 +46,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    
+    public function treinos()
+    {
+        return $this->hasMany(Treino::class);
+        return $this->hasMany(Treino::class, 'aluno_id');
+    }
+    
+
 }
