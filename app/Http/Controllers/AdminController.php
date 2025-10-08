@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
+     public function index()
+    {
+        // Retorna uma view de dashboard do admin
+        return view('admin.dashboard');
+    }
+
     // Lista todos os treinos de um aluno
     public function indexTreinos(User $aluno)
     {

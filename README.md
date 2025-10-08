@@ -35,7 +35,7 @@ composer install
 
 ---
 
-### 3️⃣ Instalar dependências JS (opcional)
+### 3️⃣ Instalar dependências JS
 
 ```bash
 npm install
@@ -78,7 +78,7 @@ php artisan migrate
 
 ---
 
-### 7️⃣ Criar usuário admin de teste (opcional)
+### 7️⃣ Criar usuário admin de teste
 
 ```bash
 php artisan tinker

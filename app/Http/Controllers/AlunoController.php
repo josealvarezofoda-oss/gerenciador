@@ -8,13 +8,10 @@ use Illuminate\Http\Request;
 
 class AlunoController extends Controller
 {
-    /**
-     * Exibe a lista de alunos.
-     */
-    public function index()
+    public function dashboard()
     {
-        $alunos = Aluno::all();
-        return view('alunos.index', compact('alunos'));
+        $treinos = auth()->user()->treinos;
+        return view('aluno.dashboard', compact('treinos'));
     }
 
     /**

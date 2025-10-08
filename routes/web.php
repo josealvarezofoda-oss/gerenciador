@@ -30,7 +30,7 @@ Route::middleware(['auth', 'tipo:admin'])->group(function () {
 });
 
 Route::middleware(['auth', 'tipo:aluno'])->group(function () {
-    Route::get('/aluno/dashboard', [AlunoController::class, 'index'])->name('aluno.dashboard');
+    Route::get('/aluno/dashboard', [AlunoController::class, 'dashboard'])->name('aluno.dashboard');
     Route::get('/aluno/treinos', [AlunoController::class, 'meusTreinos'])->name('aluno.treinos');
 });
 
