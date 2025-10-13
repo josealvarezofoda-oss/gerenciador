@@ -3,8 +3,23 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use HasFactory;
 
 class Aluno extends Model
 {
-    //
+    
+
+    protected $fillable = [
+        'idade',
+        'sexo',
+        'altura',
+        'peso',
+        'data_matricula',
+        'user_id', // se você quiser associar manualmente
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

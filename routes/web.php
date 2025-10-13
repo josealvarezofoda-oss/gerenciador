@@ -6,12 +6,8 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AlunoController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -22,12 +18,19 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'tipo:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/treinos/{aluno}', [AdminController::class, 'indexTreinos'])->name('admin.treinos.index');
-    Route::get('/admin/treino/criar/{aluno}', [AdminController::class, 'criarTreinoForm'])->name('admin.treino.criar');
-    Route::post('/admin/treino/salvar/{aluno}', [AdminController::class, 'salvarTreino'])->name('admin.treino.salvar');
-    Route::get('/admin/treino/editar/{treino}', [AdminController::class, 'editarTreinoForm'])->name('admin.treino.editar');
-    Route::put('/admin/treino/atualizar/{treino}', [AdminController::class, 'atualizarTreino'])->name('admin.treino.atualizar');
-    Route::delete('/admin/treino/deletar/{treino}', [AdminController::class, 'deletarTreino'])->name('admin.treino.deletar');
+    Route::get('/admin/treinos/criar/{aluno}', [AdminController::class, 'criarTreinoForm'])->name('admin.treinos.criar');
+    Route::post('/admin/treinos/salvar/{aluno}', [AdminController::class, 'salvarTreino'])->name('admin.treinos.salvar');
+    Route::get('/admin/treinos/editar/{treinos}', [AdminController::class, 'editarTreinoForm'])->name('admin.treinos.editar');
+    Route::put('/admin/treinos/atualizar/{treinos}', [AdminController::class, 'atualizarTreino'])->name('admin.treinos.atualizar');
+    Route::delete('/admin/treinos/deletar/{treinos}', [AdminController::class, 'deletarTreino'])->name('admin.treinos.deletar');
 });
+
+Route::middleware(['auth', 'checkTipoUsuario:admin'])->group(function () {
+    Route::get('/admin/alunos/index', [AdminController::class, 'indexAlunos'])->name('admin.alunos.index');
+    Route::get('/admin/alunos/create', [AdminController::class, 'createAluno'])->name('admin.alunos.create');
+    Route::get('/admin/alunos/store', [AdminController::class, 'storeAluno'])->name('admin.alunos.store');
+});
+
 
 Route::middleware(['auth', 'tipo:aluno'])->group(function () {
     Route::get('/aluno/dashboard', [AlunoController::class, 'dashboard'])->name('aluno.dashboard');

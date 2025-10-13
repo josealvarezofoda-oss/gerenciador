@@ -78,7 +78,7 @@ php artisan migrate
 
 ---
 
-### 7️⃣ Criar usuário admin de teste
+### 7️⃣ Usuário admin de teste
 
 ```bash
 php artisan tinker
@@ -86,19 +86,12 @@ php artisan tinker
 
 No Tinker:
 
-```php
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-
-User::create([
-    'name' => 'Administrador',
-    'email' => 'admin@academia.com',
-    'password' => Hash::make('senha123'),
-    'tipo_usuario' => 'admin'
-]);
+```
+O Aluno e Admin de testes já vem criado na seed
 ```
 
-* 🔑 Login: `admin@academia.com` / `senha123`
+* 🔑 Login(Admin): `admin@projeto.com` / `12345678`
+* 🔑 Login(Aluno): `aluno@projeto.com` / `12345678`
 
 ---
 
