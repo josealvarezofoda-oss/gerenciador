@@ -46,11 +46,21 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function aluno()
+    {
+        return $this->hasOne(Aluno::class);
+    }
+
+    public function user()
+    {
+        //
+    }
+
     
     public function treinos()
     {
-        return $this->hasMany(Treino::class);
-        return $this->hasMany(Treino::class, 'aluno_id');
+        return $this->belongsToMany(Treino::class, 'aluno_treino', 'aluno_id', 'treino_id');
     }
     
 

@@ -13,11 +13,17 @@ return new class extends Migration
     {
         Schema::create('alunos', function (Blueprint $table) {
             $table->id();
-            $table->string('nome');
-            $table->string('email')->unique();
-            $table->string('telefone')->nullable();
+            $table->unsignedBigInteger('user_id')->unique();
+            $table->integer('idade')->nullable();
+            $table->string('sexo')->nullable();
+            $table->date('data_matricula')->nullable();
+            $table->float('altura')->nullable();
+            $table->float('peso')->nullable();
+            $table->float('imc')->nullable();
             $table->date('data_nascimento')->nullable();
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
