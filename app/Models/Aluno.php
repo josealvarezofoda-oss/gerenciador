@@ -15,7 +15,7 @@ class Aluno extends Model
         'altura',
         'peso',
         'data_matricula',
-        'user_id', // se você quiser associar manualmente
+        'user_id',
     ];
 
     public function user()

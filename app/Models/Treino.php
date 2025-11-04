@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Treino extends Model
 {
+
     use HasFactory;
 
     protected $fillable = ['user_id', 'nome', 'descricao'];
@@ -22,4 +23,5 @@ class Treino extends Model
     {
         return $this->belongsToMany(User::class, 'aluno_treino', 'treino_id', 'aluno_id');
     }
+
 }

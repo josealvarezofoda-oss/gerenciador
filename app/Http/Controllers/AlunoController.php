@@ -52,6 +52,11 @@ class AlunoController extends Controller
         $aluno = auth()->user();
         $treinos = $aluno->treinos()->orderBy('created_at', 'desc')->get();
 
-        return view('aluno.treinos.index', compact('treinos'));
+        return response()->json([
+            'user_id' => $aluno->id,
+            'treinos' => $treinos->pluck('nome'),
+        ]);
+
+
     }
 }

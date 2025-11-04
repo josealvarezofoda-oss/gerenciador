@@ -84,8 +84,8 @@ class AdminController extends Controller
 
         $treino->alunos()->sync($validated['alunos']);
 
-        return redirect("/admin/treinos/{$alunoId}")
-            ->with('success', 'Treino criado e associado aos alunos!');
+        return redirect()->route('admin.treinos.criar', $alunoId)
+                 ->with('success', 'Treino criado e associado aos alunos!');
     }
 
 

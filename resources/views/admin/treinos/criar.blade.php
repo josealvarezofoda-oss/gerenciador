@@ -1,7 +1,5 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2>Cadastro de Treino</h2>
-    </x-slot>
-
-    <p>Conteúdo principal da página aqui</p>
-</x-app-layout>
+<select name="alunos[]" multiple required>
+    @foreach($alunos as $aluno)
+        <option value="{{ $aluno->id }}">{{ $aluno->name }}</option>
+    @endforeach
+</select>

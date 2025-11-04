@@ -15,6 +15,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// rotas admin
 Route::middleware(['auth', 'tipo:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/treinos/{aluno}', [AdminController::class, 'indexTreinos'])->name('admin.treinos.index');
@@ -25,16 +26,17 @@ Route::middleware(['auth', 'tipo:admin'])->group(function () {
     Route::delete('/admin/treinos/deletar/{treinos}', [AdminController::class, 'deletarTreino'])->name('admin.treinos.deletar');
 });
 
+// rotas gerenciamento de aluno
 Route::middleware(['auth', 'checkTipoUsuario:admin'])->group(function () {
     Route::get('/admin/alunos/index', [AdminController::class, 'indexAlunos'])->name('admin.alunos.index');
     Route::get('/admin/alunos/create', [AdminController::class, 'createAluno'])->name('admin.alunos.create');
-    Route::get('/admin/alunos/store', [AdminController::class, 'storeAluno'])->name('admin.alunos.store');
+    Route::post('/admin/alunos/store', [AdminController::class, 'storeAluno'])->name('admin.alunos.store');
 });
 
-
+// rotas aluno
 Route::middleware(['auth', 'tipo:aluno'])->group(function () {
     Route::get('/aluno/dashboard', [AlunoController::class, 'dashboard'])->name('aluno.dashboard');
-    Route::get('/aluno/treinos', [AlunoController::class, 'meusTreinos'])->name('aluno.treinos');
+    Route::get('/aluno/treinos', [AlunoController::class, 'meusTreinos'])->name('aluno.treinos.index');
 });
 
 require __DIR__.'/auth.php';
