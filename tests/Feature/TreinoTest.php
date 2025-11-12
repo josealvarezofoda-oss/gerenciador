@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Treino;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 
@@ -20,7 +19,6 @@ class TreinoTest extends TestCase
     {
         parent::setUp();
 
-        // Cria usuários de teste com o tipo correto
         $this->admin = User::factory()->create([
             'tipo_usuario' => 'admin',
         ]);
@@ -40,17 +38,15 @@ class TreinoTest extends TestCase
         ];
 
         $response = $this->actingAs($this->admin)
-            ->post(route('admin.treinos.salvar', $this->aluno->id), $data);
+            ->post(route('admin.treinos.salvar'), $data);
 
-        $response->assertRedirect(route('admin.treinos.criar', $this->aluno->id));
+        $response->assertRedirect(route('admin.treinos.index'));
 
         $this->assertDatabaseHas('treinos', [
             'nome' => 'Treino Teste',
         ]);
 
         $treino = Treino::where('nome', 'Treino Teste')->first();
-        $treino->alunos()->syncWithoutDetaching($this->aluno);
-
         $this->assertTrue($treino->alunos->contains($this->aluno));
     }
 
@@ -60,21 +56,20 @@ class TreinoTest extends TestCase
         $aluno = User::factory()->create([
             'tipo_usuario' => 'aluno',
         ]);
-    
-        $treino1 = Treino::factory()->create([
-            'user_id' => $aluno->id,
-        ]);
 
-    // Associa apenas o treino 1 ao aluno
-        $aluno->treinos()->attach($treino1);
+        $treino1 = Treino::factory()->create([
+            'nome' => 'Treino do Aluno',
+        ]);
+        $aluno->treinos()->attach($treino1->id);
+
+        $treino2 = Treino::factory()->create([
+            'nome' => 'Treino de Outro Aluno',
+        ]);
 
         $response = $this->actingAs($aluno)->get(route('aluno.treinos.index'));
 
-        dump($aluno->treinos->pluck('nome'));
-
         $response->assertStatus(200);
         $response->assertSeeText($treino1->nome);
-        $response->assertSee($treino1->nome);
+        $response->assertDontSeeText($treino2->nome);
     }
-
 }

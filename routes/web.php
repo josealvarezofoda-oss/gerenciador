@@ -8,6 +8,7 @@ use App\Http\Controllers\AlunoController;
 Route::get('/', function () {
     return redirect()->route('login');
 });
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -18,19 +19,22 @@ Route::middleware('auth')->group(function () {
 // rotas admin
 Route::middleware(['auth', 'tipo:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
-    Route::get('/admin/treinos/{aluno}', [AdminController::class, 'indexTreinos'])->name('admin.treinos.index');
-    Route::get('/admin/treinos/criar/{aluno}', [AdminController::class, 'criarTreinoForm'])->name('admin.treinos.criar');
-    Route::post('/admin/treinos/salvar/{aluno}', [AdminController::class, 'salvarTreino'])->name('admin.treinos.salvar');
-    Route::get('/admin/treinos/editar/{treinos}', [AdminController::class, 'editarTreinoForm'])->name('admin.treinos.editar');
-    Route::put('/admin/treinos/atualizar/{treinos}', [AdminController::class, 'atualizarTreino'])->name('admin.treinos.atualizar');
-    Route::delete('/admin/treinos/deletar/{treinos}', [AdminController::class, 'deletarTreino'])->name('admin.treinos.deletar');
-});
 
-// rotas gerenciamento de aluno
-Route::middleware(['auth', 'checkTipoUsuario:admin'])->group(function () {
+    // rotas gerenciamento de aluno
     Route::get('/admin/alunos/index', [AdminController::class, 'indexAlunos'])->name('admin.alunos.index');
+    Route::post('/admin/alunos', [AdminController::class, 'storeAluno'])->name('admin.alunos.store');
     Route::get('/admin/alunos/create', [AdminController::class, 'createAluno'])->name('admin.alunos.create');
-    Route::post('/admin/alunos/store', [AdminController::class, 'storeAluno'])->name('admin.alunos.store');
+    Route::get('/admin/alunos/{id}/editar', [AdminController::class, 'editAluno'])->name('admin.alunos.editar');
+    Route::put('/admin/alunos/{id}', [AdminController::class, 'updateAluno'])->name('admin.alunos.update');
+
+
+    //rotas gerenciamento de treino
+    Route::get('/admin/treinos/index', [AdminController::class, 'indexTreinos'])->name('admin.treinos.index');
+    Route::get('/admin/treinos/criar', [AdminController::class, 'criarTreinoForm'])->name('admin.treinos.criar');
+    Route::post('/admin/treinos/salvar', [AdminController::class, 'salvarTreino'])->name('admin.treinos.salvar');
+    Route::get('/admin/treinos/editar/{id}', [AdminController::class, 'editarTreinoForm'])->name('admin.treinos.editar');
+    Route::put('/admin/treinos/atualizar/{id}', [AdminController::class, 'atualizarTreino'])->name('admin.treinos.atualizar');
+    Route::delete('/admin/treinos/deletar/{id}', [AdminController::class, 'deletarTreino'])->name('admin.treinos.deletar');
 });
 
 // rotas aluno

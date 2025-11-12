@@ -38,7 +38,7 @@ class AlunoAdminTest extends TestCase
             'peso' => 70,
         ];
 
-        $response = $this->actingAs($this->admin)->post('/admin/alunos/store', $data);
+        $response = $this->actingAs($this->admin)->post('/admin/alunos', $data);
         $response->assertRedirect('/admin/alunos/index');
         $this->assertDatabaseHas('users', ['email' => 'aluno@test.com']);
         $this->assertDatabaseHas('alunos', ['idade' => 20]);

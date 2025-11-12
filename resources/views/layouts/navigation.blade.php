@@ -125,6 +125,6 @@
                     </x-responsive-nav-link>
                 </form>
             </div>
-        </div>
+        @endauth    
     </div>
 </nav>
