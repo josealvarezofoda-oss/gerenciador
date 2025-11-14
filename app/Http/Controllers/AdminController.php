@@ -10,9 +10,12 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
+    // controller do gerenciamento de alunos
     public function index()
     {
-        return view('admin.dashboard');
+        $totalAlunos = Aluno::count();
+        $totalTreinos = Treino::count();
+        return view('admin.dashboard', compact('totalAlunos', 'totalTreinos'));
     }
 
     public function indexAlunos()
@@ -54,10 +57,53 @@ class AdminController extends Controller
 
         return redirect()->route('admin.alunos.index')->with('success', 'Aluno cadastrado com sucesso!');
     }
+    
+    public function editAluno($id)
+    {
+        $aluno = User::with('aluno')->findOrFail($id);
+        return view('admin.alunos.editar', compact('aluno'));
+    }
 
+    public function updateAluno(Request $request, $id)
+    {
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'idade' => 'nullable|integer',
+            'sexo' => 'nullable|string',
+            'altura' => 'nullable|numeric',
+            'peso' => 'nullable|numeric',
+        ]);
+
+        $user = User::findOrFail($id);
+
+        $user->update([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+        ]);
+
+        if (!$user->aluno) {
+            $user->aluno()->create([
+                'data_matricula' => now(),
+            ]);
+        }
+
+        $user->aluno->update([
+            'idade' => $validated['idade'] ?? null,
+            'sexo' => $validated['sexo'] ?? null,
+            'altura' => $validated['altura'] ?? null,
+            'peso' => $validated['peso'] ?? null,
+        ]);
+
+        return redirect()->route('admin.alunos.index')->with('success', 'Aluno atualizado com sucesso!');
+    }
+
+    // controller do gerenciamento de treinos
     public function indexTreinos()
     {
         $treinos = Treino::with('alunos')->get();
+        $treinos = Treino::withCount('alunos')->get();
         return view('admin.treinos.index', compact('treinos'));
     }
 
@@ -67,56 +113,74 @@ class AdminController extends Controller
         return view('admin.treinos.criar', compact('alunos'));
     }
 
-    public function salvarTreino(Request $request, $alunoId)
+    public function salvarTreino(Request $request)
     {
         $validated = $request->validate([
             'nome' => 'required|string|max:255',
             'descricao' => 'nullable|string',
-            'alunos' => 'required|array',
+            'dia_semana' => 'required|string|in:segunda,terca,quarta,quinta,sexta,sabado,domingo',
+            'alunos' => 'required|array|min:1',
             'alunos.*' => 'exists:users,id',
         ]);
 
         $treino = Treino::create([
-            'user_id' => $alunoId,
             'nome' => $validated['nome'],
             'descricao' => $validated['descricao'] ?? null,
+            'dia_semana' => $validated['dia_semana'],
         ]);
 
+        // Associa todos os alunos selecionados via tabela pivot
         $treino->alunos()->sync($validated['alunos']);
 
-        return redirect("/admin/treinos/{$alunoId}")
-            ->with('success', 'Treino criado e associado aos alunos!');
+        return redirect()
+            ->route('admin.treinos.index')
+            ->with('success', 'Treino criado e associado aos alunos com sucesso!');
     }
 
 
-    public function editarTreinoForm(Treino $treino)
+
+    public function editarTreinoForm($id)
     {
+        $treino = Treino::with('alunos')->findOrFail($id);
         $alunos = User::where('tipo_usuario', 'aluno')->get();
+
         return view('admin.treinos.editar', compact('treino', 'alunos'));
     }
 
-    public function atualizarTreino(Request $request, Treino $treino)
+    public function atualizarTreino(Request $request, $id)
     {
         $validated = $request->validate([
             'nome' => 'required|string|max:255',
             'descricao' => 'nullable|string',
-            'alunos' => 'required|array',
+            'dia_semana' => 'required|string|in:segunda,terca,quarta,quinta,sexta,sabado,domingo',
+            'alunos' => 'required|array|min:1',
             'alunos.*' => 'exists:users,id',
         ]);
+
+        $treino = Treino::findOrFail($id);
 
         $treino->update([
             'nome' => $validated['nome'],
             'descricao' => $validated['descricao'] ?? null,
+            'dia_semana' => $validated['dia_semana'],
         ]);
 
-    $treino->alunos()->sync($validated['alunos']);
+        $treino->alunos()->sync($validated['alunos']);
 
-    return redirect()->route('admin.treinos.index')->with('success', 'Treino atualizado!');
+        return redirect()->route('admin.treinos.index')->with('success', 'Treino atualizado com sucesso!');
     }
 
-    public function deletarTreino(Treino $treino)
+
+    public function deletarTreino($id)
     {
+        $treino = Treino::findOrFail($id);
+
+        // remover associação
+        $treino->alunos()->detach();
+
         $treino->delete();
-        return back()->with('success', 'Treino deletado!');
+
+        return back()->with('success', 'Treino deletado com sucesso!');
     }
+
 }

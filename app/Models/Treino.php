@@ -7,9 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Treino extends Model
 {
+
     use HasFactory;
 
-    protected $fillable = ['user_id', 'nome', 'descricao'];
+    protected $fillable = [
+        'user_id',
+        'nome',
+        'descricao',
+        'categoria',
+        'dia_semana'
+    ];
 
     // Cada treino pertence a um aluno principal (dono do treino)
     public function aluno()
@@ -22,4 +29,5 @@ class Treino extends Model
     {
         return $this->belongsToMany(User::class, 'aluno_treino', 'treino_id', 'aluno_id');
     }
+
 }

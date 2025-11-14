@@ -6,19 +6,26 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\Treino;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 
 class TreinoTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, WithFaker;
 
     protected $admin;
     protected $aluno;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->admin = User::factory()->create(['tipo_usuario' => 'admin']);
-        $this->aluno = User::factory()->create(['tipo_usuario' => 'aluno']);
+
+        $this->admin = User::factory()->create([
+            'tipo_usuario' => 'admin',
+        ]);
+
+        $this->aluno = User::factory()->create([
+            'tipo_usuario' => 'aluno',
+        ]);
     }
 
     /** @test */
@@ -26,32 +33,43 @@ class TreinoTest extends TestCase
     {
         $data = [
             'nome' => 'Treino Teste',
-            'descricao' => 'Descrição treino',
+            'descricao' => 'Descrição do treino',
             'alunos' => [$this->aluno->id],
         ];
 
         $response = $this->actingAs($this->admin)
-            ->post(route('admin.treino.salvar', $this->aluno->id), $data);
+            ->post(route('admin.treinos.salvar'), $data);
 
-        $response->assertRedirect(route('admin.treino.criar', $this->aluno->id));
-        $this->assertDatabaseHas('treinos', ['nome' => 'Treino Teste']);
+        $response->assertRedirect(route('admin.treinos.index'));
+
+        $this->assertDatabaseHas('treinos', [
+            'nome' => 'Treino Teste',
+        ]);
 
         $treino = Treino::where('nome', 'Treino Teste')->first();
         $this->assertTrue($treino->alunos->contains($this->aluno));
     }
 
     /** @test */
-    public function aluno_consegue_ver_seus_treinos()
+    public function aluno_visualiza_apenas_treinos_associados()
     {
-        $treino = Treino::factory()->create();
-        $treino->alunos()->attach($this->aluno);
+        $aluno = User::factory()->create([
+            'tipo_usuario' => 'aluno',
+        ]);
 
-        $response = $this->actingAs($this->aluno)
-            ->get(route('aluno.treinos'));
+        $treino1 = Treino::factory()->create([
+            'nome' => 'Treino do Aluno',
+        ]);
+        $aluno->treinos()->attach($treino1->id);
+
+        $treino2 = Treino::factory()->create([
+            'nome' => 'Treino de Outro Aluno',
+        ]);
+
+        $response = $this->actingAs($aluno)->get(route('aluno.treinos.index'));
 
         $response->assertStatus(200);
-        $response->assertViewIs('aluno.treinos.index');
-        $response->assertSee($treino->nome);
+        $response->assertSeeText($treino1->nome);
+        $response->assertDontSeeText($treino2->nome);
     }
-
 }

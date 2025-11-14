@@ -13,7 +13,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Admin padrão
         User::updateOrCreate(
             ['email' => 'admin@projeto.com'],
             [
@@ -23,7 +22,6 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // Aluno de exemplo (opcional)
         User::updateOrCreate(
             ['email' => 'aluno@projeto.com'],
             [

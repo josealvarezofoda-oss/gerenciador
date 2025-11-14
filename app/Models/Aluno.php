@@ -15,7 +15,11 @@ class Aluno extends Model
         'altura',
         'peso',
         'data_matricula',
-        'user_id', // se você quiser associar manualmente
+        'user_id',
+    ];
+
+    protected $casts = [
+        'data_matricula' => 'datetime',
     ];
 
     public function user()

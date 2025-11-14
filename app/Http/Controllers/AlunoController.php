@@ -2,55 +2,47 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Treino;
-use App\Models\Aluno;
 use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\Treino;
 
 class AlunoController extends Controller
 {
-    public function create()
-    {
-        return view('alunos.create');
-    }
-
-    public function store(Request $request)
-    {
-        Aluno::create($request->all());
-        return redirect()->route('alunos.index');
-    }
-
-    public function edit(Aluno $aluno)
-    {
-        return view('alunos.edit', compact('aluno'));
-    }
-
-    public function update(Request $request, Aluno $aluno)
-    {
-        $aluno->update($request->all());
-        return redirect()->route('alunos.index');
-    }
-
-    public function destroy(Aluno $aluno)
-    {
-        $aluno->delete();
-        return redirect()->route('alunos.index');
-    }
-
     public function dashboard()
     {
-        $aluno = auth()->user();
+        $user = auth()->user();
+        $aluno = $user->aluno;
 
-        $treinoAtual = $aluno->treinos()->latest()->first();
+        if (!$aluno) {
+            return redirect()->route('home')->with('error', 'Aluno não encontrado.');
+        }
 
-        $historico = $aluno->treinos()->orderBy('created_at', 'desc')->get();
+        $imc = null;
+        if ($aluno->peso && $aluno->altura && $aluno->altura > 0) {
+            $imc = round($aluno->peso / (($aluno->altura / 100) ** 2), 1);
+        }
 
-        return view('aluno.dashboard', compact('aluno', 'treinoAtual', 'historico'));
+        return view('aluno.dashboard', compact('user', 'aluno', 'imc'));
     }
 
     public function meusTreinos()
     {
-        $aluno = auth()->user();
-        $treinos = $aluno->treinos()->orderBy('created_at', 'desc')->get();
+        $user = auth()->user();
+
+        $treinos = $user->treinos()
+            ->orderByRaw("
+                CASE 
+                    WHEN dia_semana = 'segunda' THEN 1
+                    WHEN dia_semana = 'terca' THEN 2
+                    WHEN dia_semana = 'quarta' THEN 3
+                    WHEN dia_semana = 'quinta' THEN 4
+                    WHEN dia_semana = 'sexta' THEN 5
+                    WHEN dia_semana = 'sabado' THEN 6
+                    WHEN dia_semana = 'domingo' THEN 7
+                    ELSE 8
+                END
+            ")
+            ->get();
 
         return view('aluno.treinos.index', compact('treinos'));
     }
