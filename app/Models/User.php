@@ -52,16 +52,4 @@ class User extends Authenticatable
         return $this->hasOne(Aluno::class);
     }
 
-    public function user()
-    {
-        //
-    }
-
-    
-    public function treinos()
-    {
-        return $this->belongsToMany(Treino::class, 'aluno_treino', 'aluno_id', 'treino_id');
-    }
-    
-
 }

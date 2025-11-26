@@ -2,32 +2,28 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Treino extends Model
 {
-
-    use HasFactory;
-
     protected $fillable = [
-        'user_id',
         'nome',
         'descricao',
+        'dia_semana',
         'categoria',
-        'dia_semana'
     ];
 
-    // Cada treino pertence a um aluno principal (dono do treino)
-    public function aluno()
+    public function exercicios()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsToMany(Exercicio::class, 'treino_exercicios', 'treino_id', 'exercicio_id')
+                    ->withPivot('id', 'series', 'repeticoes', 'descanso', 'ordem', 'concluido')
+                    ->withTimestamps();
     }
 
-    // Um treino pode estar associado a vários alunos (via pivot)
     public function alunos()
     {
-        return $this->belongsToMany(User::class, 'aluno_treino', 'treino_id', 'aluno_id');
+        return $this->belongsToMany(Aluno::class, 'aluno_treino', 'treino_id', 'aluno_id')
+                    ->withPivot('dia_semana')
+                    ->withTimestamps();
     }
-
 }

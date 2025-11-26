@@ -35,26 +35,67 @@
 
         <!-- Navegação -->
         <nav class="flex flex-col mt-6 space-y-1">
+
+            <!-- Perfil -->
             <a href="{{ route('admin.dashboard') }}" 
-               class="flex items-center px-6 py-3 mx-2 rounded-lg hover:bg-white/20 transition text-lg font-medium">
+                class="flex items-center px-6 py-3 mx-2 rounded-lg hover:bg-white/20 transition text-lg font-medium">
                 <span class="material-icons mr-3" x-show="open">person</span>
                 <span x-show="open">Perfil do Admin</span>
                 <span x-show="!open" class="mx-auto material-icons">person</span>
             </a>
 
+            <!-- Alunos -->
             <a href="{{ route('admin.alunos.index') }}" 
-               class="flex items-center px-6 py-3 mx-2 rounded-lg hover:bg-white/20 transition text-lg font-medium">
+                class="flex items-center px-6 py-3 mx-2 rounded-lg hover:bg-white/20 transition text-lg font-medium">
                 <span class="material-icons mr-3" x-show="open">group</span>
                 <span x-show="open">Gerenciar Alunos</span>
                 <span x-show="!open" class="mx-auto material-icons">group</span>
             </a>
 
-            <a href="{{ route('admin.treinos.index', ['aluno' => 1]) }}" 
-               class="flex items-center px-6 py-3 mx-2 rounded-lg hover:bg-white/20 transition text-lg font-medium">
-                <span class="material-icons mr-3" x-show="open">fitness_center</span>
-                <span x-show="open">Gerenciar Treinos</span>
-                <span x-show="!open" class="mx-auto material-icons">fitness_center</span>
-            </a>
+            <!-- Dropdown TREINOS + EXERCÍCIOS -->
+            <div x-data="{ openMenu: false }">
+                <button 
+                    @click="openMenu = !openMenu"
+                    class="w-full flex items-center px-6 py-3 mx-2 rounded-lg hover:bg-white/20 transition text-lg font-medium"
+                >
+                    <span class="material-icons mr-3" x-show="open">fitness_center</span>
+                    <span x-show="open">Treinos & Exercícios</span>
+                    <span x-show="!open" class="mx-auto material-icons">fitness_center</span>
+
+                    <span class="material-icons ml-auto" x-show="open">
+                        <span x-show="!openMenu">expand_more</span>
+                        <span x-show="openMenu">expand_less</span>
+                    </span>
+                </button>
+
+                <!-- Submenu -->
+                <div 
+                    x-show="openMenu && open"
+                    x-transition
+                    class="ml-12 mt-1 space-y-1"
+                >
+                    <a href="{{ route('admin.treinos.index') }}"
+                    class="block px-4 py-2 rounded hover:bg-white/20">
+                        • Listar Treinos
+                    </a>
+
+                    <a href="{{ route('admin.treinos.criar') }}"
+                    class="block px-4 py-2 rounded hover:bg-white/20">
+                        • Criar Treino
+                    </a>
+
+                    <a href="{{ route('admin.exercicios.index') }}"
+                    class="block px-4 py-2 rounded hover:bg-white/20">
+                        • Listar Exercícios
+                    </a>
+
+                    <a href="{{ route('admin.exercicios.create') }}"
+                    class="block px-4 py-2 rounded hover:bg-white/20">
+                        • Criar Exercício
+                    </a>
+                </div>
+            </div>
+
         </nav>
 
         <!-- Botão de sair -->

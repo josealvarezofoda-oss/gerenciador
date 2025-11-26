@@ -8,19 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('treinos', function (Blueprint $table) {
+        Schema::create('planos', function (Blueprint $table) {
             $table->id();
             $table->string('nome');
-            $table->text('descricao')->nullable();
-            $table->string('categoria')->nullable();
-            $table->boolean('ativo')->default(true);
-
+            $table->integer('dias_semana');
+            $table->decimal('valor', 8, 2);
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('treinos');
+        Schema::dropIfExists('planos');
     }
 };

@@ -6,30 +6,26 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('alunos', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->unique();
             $table->integer('idade')->nullable();
             $table->string('sexo')->nullable();
             $table->date('data_matricula')->nullable();
-            $table->float('altura')->nullable();
-            $table->float('peso')->nullable();
-            $table->float('imc')->nullable();
-            $table->date('data_nascimento')->nullable();
-            $table->timestamps();
+            $table->decimal('altura', 5, 2)->nullable();
+            $table->decimal('peso', 5, 2)->nullable();
+            $table->decimal('imc', 5, 2)->nullable();
+            $table->enum('status', ['ativo', 'pendente'])->default('pendente');
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            //fks
+            $table->foreignId('user_id')->unique()->constrained('users')->onDelete('cascade');            
+            $table->foreignId('plano_id')->nullable()->constrained('planos');
+
+            $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('alunos');

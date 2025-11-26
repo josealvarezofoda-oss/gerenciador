@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
 use App\Models\Treino;
+use App\Models\Exercicio;
+use App\Models\TreinoExercicio;
 
 class AlunoController extends Controller
 {
@@ -14,7 +15,7 @@ class AlunoController extends Controller
         $aluno = $user->aluno;
 
         if (!$aluno) {
-            return redirect()->route('home')->with('error', 'Aluno não encontrado.');
+            return redirect()->route('login')->with('error', 'Aluno não encontrado.');
         }
 
         $imc = null;
@@ -29,7 +30,13 @@ class AlunoController extends Controller
     {
         $user = auth()->user();
 
-        $treinos = $user->treinos()
+        $aluno = $user->aluno;
+        if (!$aluno) {
+            return back()->with('error', 'Aluno não encontrado.');
+        }
+
+        $treinos = $aluno->treinos()
+            ->with('exercicios')
             ->orderByRaw("
                 CASE 
                     WHEN dia_semana = 'segunda' THEN 1
