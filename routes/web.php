@@ -1,14 +1,27 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AdminController;
+
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+
+// Controllers Admin
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AlunoAdminController;
+use App\Http\Controllers\Admin\TreinoController;
+use App\Http\Controllers\Admin\ExercicioController;
+use App\Http\Controllers\TreinoExercicioController;
+
+// Controller do aluno
 use App\Http\Controllers\AlunoController;
 
 Route::get('/', function () {
     return redirect()->route('login');
 });
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('logout');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -16,31 +29,62 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// rotas admin
+//rotas Admin
 Route::middleware(['auth', 'tipo:admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
 
-    // rotas gerenciamento de aluno
-    Route::get('/admin/alunos/index', [AdminController::class, 'indexAlunos'])->name('admin.alunos.index');
-    Route::post('/admin/alunos', [AdminController::class, 'storeAluno'])->name('admin.alunos.store');
-    Route::get('/admin/alunos/create', [AdminController::class, 'createAluno'])->name('admin.alunos.create');
-    Route::get('/admin/alunos/{id}/editar', [AdminController::class, 'editAluno'])->name('admin.alunos.editar');
-    Route::put('/admin/alunos/{id}', [AdminController::class, 'updateAluno'])->name('admin.alunos.update');
-
-
-    //rotas gerenciamento de treino
-    Route::get('/admin/treinos/index', [AdminController::class, 'indexTreinos'])->name('admin.treinos.index');
-    Route::get('/admin/treinos/criar', [AdminController::class, 'criarTreinoForm'])->name('admin.treinos.criar');
-    Route::post('/admin/treinos/salvar', [AdminController::class, 'salvarTreino'])->name('admin.treinos.salvar');
-    Route::get('/admin/treinos/editar/{id}', [AdminController::class, 'editarTreinoForm'])->name('admin.treinos.editar');
-    Route::put('/admin/treinos/atualizar/{id}', [AdminController::class, 'atualizarTreino'])->name('admin.treinos.atualizar');
-    Route::delete('/admin/treinos/deletar/{id}', [AdminController::class, 'deletarTreino'])->name('admin.treinos.deletar');
+    // Dashboard
+    Route::get('/admin/dashboard', [AdminController::class, 'index'])
+        ->name('admin.dashboard');
+    //crud Aluno
+    Route::get('/admin/alunos', [AlunoAdminController::class, 'indexAlunos'])
+        ->name('admin.alunos.index');
+    Route::get('/admin/alunos/create', [AlunoAdminController::class, 'createAluno'])
+        ->name('admin.alunos.create');
+    Route::post('/admin/alunos', [AlunoAdminController::class, 'storeAluno'])
+        ->name('admin.alunos.store');
+    Route::get('/admin/alunos/{id}/editar', [AlunoAdminController::class, 'editAluno'])
+        ->name('admin.alunos.editar');
+    Route::put('/admin/alunos/{id}', [AlunoAdminController::class, 'updateAluno'])
+        ->name('admin.alunos.update');
+    Route::put('/admin/alunos/{id}/status', [AlunoAdminController::class, 'toggleAlunoStatus'])
+        ->name('admin.alunos.status');
+    //crud treinos
+    Route::get('/admin/treinos', [TreinoController::class, 'index'])
+        ->name('admin.treinos.index');
+    Route::get('/admin/treinos/criar', [TreinoController::class, 'create'])
+        ->name('admin.treinos.criar');
+    Route::post('/admin/treinos', [TreinoController::class, 'store'])
+        ->name('admin.treinos.store');
+    Route::get('/admin/treinos/{id}/editar', [TreinoController::class, 'edit'])
+        ->name('admin.treinos.editar');
+    Route::put('/admin/treinos/{id}', [TreinoController::class, 'update'])
+        ->name('admin.treinos.atualizar');
+    Route::delete('/admin/treinos/{id}', [TreinoController::class, 'destroy'])
+        ->name('admin.treinos.delete');
+    //crud exercicios
+    Route::get('/admin/exercicios', [ExercicioController::class, 'index'])
+        ->name('admin.exercicios.index');
+    Route::get('/admin/exercicios/create', [ExercicioController::class, 'create'])
+        ->name('admin.exercicios.create');
+    Route::post('/admin/exercicios', [ExercicioController::class, 'store'])
+        ->name('admin.exercicios.store');
+    Route::get('/admin/exercicios/{id}/editar', [ExercicioController::class, 'edit'])
+        ->name('admin.exercicios.editar');
+    Route::put('/admin/exercicios/{id}', [ExercicioController::class, 'update'])
+        ->name('admin.exercicios.update');
+    Route::delete('/admin/exercicios/{id}', [ExercicioController::class, 'destroy'])
+        ->name('admin.exercicios.deletar');
 });
 
-// rotas aluno
+//rotas Aluno
 Route::middleware(['auth', 'tipo:aluno'])->group(function () {
-    Route::get('/aluno/dashboard', [AlunoController::class, 'dashboard'])->name('aluno.dashboard');
-    Route::get('/aluno/treinos', [AlunoController::class, 'meusTreinos'])->name('aluno.treinos.index');
+    Route::get('/aluno/dashboard', [AlunoController::class, 'dashboard'])
+        ->name('aluno.dashboard');
+    Route::get('/aluno/treinos', [AlunoController::class, 'meusTreinos'])
+        ->name('aluno.treinos.index');
+    Route::put('/aluno/treinos/{id}/concluir', [TreinoExercicioController::class, 'concluir'])
+        ->name('aluno.treinos.concluir');
 });
+
 
 require __DIR__.'/auth.php';

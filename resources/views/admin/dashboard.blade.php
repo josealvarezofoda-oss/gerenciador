@@ -4,15 +4,6 @@
 
 @section('content')
 
-<div class="fade">
-    <h2 class="text-2xl font-semibold mb-6 text-indigo-700">Perfil do Admin</h2>
-
-    <div class="bg-white rounded-2xl shadow-md p-6 mb-6 hover:shadow-xl transition">
-        <h3 class="text-xl font-bold text-gray-800 mb-2">{{ Auth::user()->name }}</h3>
-        <p class="text-gray-600">{{ Auth::user()->email }}</p>
-    </div>
-</div>
-
 <div class="p-8">
     <h1 class="text-3xl font-bold text-indigo-700 mb-8">Painel do Administrador</h1>
 

@@ -15,9 +15,26 @@
             <p><span class="font-medium text-gray-600">Data de Matrícula:</span> 
                 {{ $aluno->data_matricula ? $aluno->data_matricula->format('d/m/Y') : '—' }}
             </p>
-            <p><span class="font-medium text-gray-600">Status:</span> 
-                <span class="inline-block px-3 py-1 text-sm rounded-full bg-green-500 text-white">Ativo</span>
+            <p><span class="font-medium text-gray-600">Plano:</span>
+                {{ $aluno->plano ? $aluno->plano->dias_semana . ' dias' : '—'}}
             </p>
+
+            <p><span class="font-medium text-gray-600">Status:</span> 
+                @php
+                    $status = $aluno->status ?? 'pendente';
+
+                    $cores = [
+                        'ativo' => 'bg-green-500',
+                        'pendente' => 'bg-yellow-500',
+                        'inativo' => 'bg-red-500',
+                    ];
+                @endphp
+
+                <span class="inline-block px-3 py-1 text-sm rounded-full text-white {{ $cores[$status] ?? 'bg-gray-500' }}">
+                    {{ ucfirst($status) }}
+                </span>
+            </p>
+
         </div>
 
         <!-- Informações físicas -->

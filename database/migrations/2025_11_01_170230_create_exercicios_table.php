@@ -8,19 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('treinos', function (Blueprint $table) {
+        Schema::create('exercicios', function (Blueprint $table) {
             $table->id();
             $table->string('nome');
+            $table->string('tipo')->nullable();
+            $table->string('maquina')->nullable();
+            $table->string('imagem')->nullable();
             $table->text('descricao')->nullable();
-            $table->string('categoria')->nullable();
-            $table->boolean('ativo')->default(true);
-
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('treinos');
+        Schema::dropIfExists('exercicios');
     }
 };
