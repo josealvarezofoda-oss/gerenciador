@@ -34,8 +34,8 @@
         }
         .login-card {
             display: flex;
-            width: 1000px;
-            max-width: 90%;
+            width: 1350px;
+            max-width: 98%;
             border-radius: 1.25rem;
             overflow: hidden;
             box-shadow: 0 15px 35px rgba(0,0,0,0.25);
