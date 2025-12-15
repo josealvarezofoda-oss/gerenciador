@@ -25,7 +25,7 @@
         x-data="{ hover:false, ready:false }"
         @mouseenter="hover = true; setTimeout(() => ready = true, 180)"
         @mouseleave="hover = false; ready = false"
-        class="bg-gradient-to-b from-indigo-600 to-purple-600 text-white flex flex-col shadow-xl transition-all duration-500 ease-in-out"
+        class="bg-blue-900 text-white flex flex-col shadow-xl transition-all duration-500 ease-in-out"
         :class="{ 'w-64': hover, 'w-20': !hover }"
     >
 
@@ -95,20 +95,11 @@
                         • Listar Treinos
                     </a>
 
-                    <a href="{{ route('admin.treinos.criar') }}"
-                    class="block px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
-                        • Criar Treino
-                    </a>
-
                     <a href="{{ route('admin.exercicios.index') }}"
                     class="block px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
                         • Listar Exercícios
                     </a>
 
-                    <a href="{{ route('admin.exercicios.create') }}"
-                    class="block px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
-                        • Criar Exercício
-                    </a>
                 </div>
             </div>
 
@@ -133,4 +124,5 @@
     </div>
 
 </body>
+@stack('scripts')
 </html>

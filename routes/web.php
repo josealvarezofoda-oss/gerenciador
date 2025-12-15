@@ -6,10 +6,11 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 // Controllers Admin
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AlunoAdminController;
 use App\Http\Controllers\Admin\TreinoController;
 use App\Http\Controllers\Admin\ExercicioController;
+use App\Http\Controllers\Admin\MensalidadeController;
 use App\Http\Controllers\TreinoExercicioController;
 
 // Controller do Aluno
@@ -35,7 +36,7 @@ Route::middleware('auth')->group(function () {
 Route::prefix('admin')->middleware(['auth', 'tipo:admin'])->group(function () {
 
     // Dashboard
-    Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
     // CRUD Alunos
     Route::get('/alunos', [AlunoAdminController::class, 'indexAlunos'])->name('admin.alunos.index');
@@ -44,6 +45,16 @@ Route::prefix('admin')->middleware(['auth', 'tipo:admin'])->group(function () {
     Route::get('/alunos/{id}/editar', [AlunoAdminController::class, 'editAluno'])->name('admin.alunos.editar');
     Route::put('/alunos/{id}', [AlunoAdminController::class, 'updateAluno'])->name('admin.alunos.update');
     Route::put('/alunos/{id}/status', [AlunoAdminController::class, 'toggleAlunoStatus'])->name('admin.alunos.status');
+
+    // mensalidades gerais
+    Route::get('/mensalidades', [MensalidadeController::class, 'index'])->name('admin.mensalidades.index');
+    Route::post('/mensalidades', [MensalidadeController::class, 'store'])->name('admin.mensalidades.store');
+    Route::get('/mensalidades/{id}', [MensalidadeController::class, 'show'])->name('admin.mensalidades.show');
+    Route::put('/mensalidades/{id}/pagar', [MensalidadeController::class, 'pagar'])->name('admin.mensalidades.pagar');
+
+    // mensalidades por aluno
+    Route::get('/alunos/{id}/mensalidades', [MensalidadeController::class, 'alunoMensalidades'])
+        ->name('admin.alunos.mensalidades');
 
     // CRUD Treinos
     Route::get('/treinos', [TreinoController::class, 'index'])->name('admin.treinos.index');

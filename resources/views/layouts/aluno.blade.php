@@ -64,7 +64,8 @@
 
 <body class="flex min-h-screen">
 
-    <div class="sidebar bg-gradient-to-b from-indigo-600 to-purple-600 text-white flex flex-col shadow-lg">
+    <div class="sidebar bg-gradient-to-b from-blue-900 to-blue-900 text-white flex flex-col shadow-lg">
+
 
         <div class="fitway-container p-4 h-[70px] border-b border-white/20">
             <span class="fitway">FitWay</span>

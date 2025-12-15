@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Mensalidade;
+use Carbon\Carbon;
 use App\Models\Aluno;
 use App\Models\Plano;
 use App\Models\User;
@@ -13,9 +15,18 @@ class AlunoAdminController extends Controller
 {
     public function indexAlunos()
     {
-        $alunos = Aluno::with('user', 'plano')->get();
+        $alunos = Aluno::with([
+            'user',
+            'plano',
+            'mensalidades' => function ($q) {
+                $q->whereMonth('mes_referencia', now()->month)
+                ->whereYear('mes_referencia', now()->year);
+            }
+        ])->get();
+
         return view('admin.alunos.index', compact('alunos'));
     }
+
 
     public function createAluno()
     {
@@ -49,6 +60,19 @@ class AlunoAdminController extends Controller
             'peso' => $validated['peso'] ?? null,
             'plano_id' => $request->plano_id,
             'data_matricula' => now(),
+        ]);
+
+        activity_log('Aluno criado', [
+            'aluno' => $user->name,
+            'aluno_id' => $user->aluno->id
+        ]);
+
+        Mensalidade::create([
+            'aluno_id' => $user->aluno->id,
+            'plano_id' => $request->plano_id,
+            'valor' => $user->aluno->plano->valor,
+            'mes_referencia' => Carbon::now()->startOfMonth(),
+            'status' => 'pendente',
         ]);
 
         return redirect()->route('admin.alunos.index')->with('success', 'Aluno cadastrado com sucesso!');
@@ -90,8 +114,22 @@ class AlunoAdminController extends Controller
             'plano_id' => $validated['plano_id'],
         ]);
 
+        activity_log('Aluno Atualizado', [
+            'aluno' => $user->name,
+            'aluno_id' => $user->aluno->id
+        ]);
+
+
         return redirect()->route('admin.alunos.index')->with('success', 'Aluno atualizado com sucesso!');
     }
+
+    public function mensalidades($id)
+    {
+        $aluno = Aluno::with('mensalidades', 'plano')->findOrFail($id);
+
+        return view('admin.alunos.mensalidades', compact('aluno'));
+    }
+
 
     public function toggleAlunoStatus($id)
     {
@@ -99,6 +137,11 @@ class AlunoAdminController extends Controller
 
         $aluno->status = $aluno->status === 'ativo' ? 'pendente' : 'ativo';
         $aluno->save();
+
+        activity_log('Status do aluno alterado', [
+            'aluno_id' => $aluno->id,
+            'novo_status' => $aluno->status
+        ]);
 
         return back()->with('success', 'Status atualizado com sucesso!');
     }

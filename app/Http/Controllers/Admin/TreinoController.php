@@ -83,6 +83,11 @@ class TreinoController extends Controller
             $treino->exercicios()->sync($pivotEx);
         }
 
+        activity_log('Treino criado', [
+            'treino' => $treino->nome,
+            'treino_id' => $treino->id
+        ]);
+
         return redirect()->route('admin.treinos.index')
                          ->with('success', 'Treino criado com sucesso!');
     }
@@ -153,6 +158,12 @@ class TreinoController extends Controller
             $treino->exercicios()->detach();
         }
 
+        activity_log('Treino atualizado', [
+            'treino_id' => $treino->id,
+            'nome' => $validated['nome']
+        ]);
+
+
         return redirect()->route('admin.treinos.index')
                          ->with('success', 'Treino atualizado com sucesso!');
     }
@@ -163,6 +174,12 @@ class TreinoController extends Controller
         $treino->alunos()->detach();
         $treino->exercicios()->detach();
         $treino->delete();
+
+        activity_log('Treino deletado', [
+            'treino_id' => $treino->id,
+            'nome' => $treino->nome
+        ]);
+
 
         return back()->with('success', 'Treino deletado com sucesso!');
     }
