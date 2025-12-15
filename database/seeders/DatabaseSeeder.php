@@ -21,25 +21,5 @@ class DatabaseSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
-
-        // ALUNO
-        $alunoUser = User::updateOrCreate(
-            ['email' => 'aluno@projeto.com'],
-            [
-                'name' => 'Aluno Teste',
-                'password' => Hash::make('12345678'),
-                'tipo_usuario' => 'aluno',
-                'email_verified_at' => now(),
-            ]
-        );
-
-        // Registro do aluno (relacionamento)
-        Aluno::updateOrCreate(
-            ['user_id' => $alunoUser->id],
-            [
-                'peso' => 70,
-                'altura' => 175,
-            ]
-        );
     }
 }

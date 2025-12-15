@@ -9,7 +9,7 @@
     <style>
         body {
             font-family: 'Titillium Web', sans-serif;
-            background: linear-gradient(135deg, #4A90FF, #6D5DFB, #9B51E0);
+            background: linear-gradient(135deg, #3779e2, #3e2ce4, #2405af);
             display: flex;
             justify-content: center;
             align-items: center;

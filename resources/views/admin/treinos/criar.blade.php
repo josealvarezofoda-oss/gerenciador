@@ -34,12 +34,20 @@
                 <label>Descrição</label>
                 <textarea name="descricao" rows="3" class="w-full border rounded-lg p-3 mt-1"></textarea>
             </div>
-
+            <!--Coluna Seleção alunos-->
             <div class="col-span-2">
                 <label>Selecionar Alunos</label>
                 <select name="alunos[]" multiple class="w-full border rounded-lg p-3 h-44 mt-1">
                     @foreach($alunos as $aluno)
-                        <option value="{{ $aluno->id }}">{{ $aluno->user->name }}</option>
+                        <option value="{{ $aluno->id }}">
+                            {{ $aluno->user->name }}
+                            @if($aluno->plano)
+                                — {{ $aluno->plano->dias_semana }} dias
+                            @else
+                                — Sem plano
+                            @endif
+                            — {{ ucfirst($aluno->status) }}
+                        </option>
                     @endforeach
                 </select>
             </div>

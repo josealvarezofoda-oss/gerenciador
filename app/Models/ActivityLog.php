@@ -7,14 +7,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ActivityLog extends Model
 {
-    protected $fillable = ['user_id', 'action', 'meta'];
-
-    protected $casts = [
-        'meta' => 'array', // <-- IMPORTANTE!
+    // Campos permitidos
+    protected $fillable = [
+        'user_id',
+        'action',
+        'meta'
     ];
 
+    // Converte 'meta' automaticamente de/para array
+    protected $casts = [
+        'meta' => 'array',
+    ];
+
+    // Relacionamento com User
     public function user(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\User::class);
+        return $this->belongsTo(User::class);
     }
 }

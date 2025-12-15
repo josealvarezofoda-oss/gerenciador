@@ -16,7 +16,7 @@ return new class extends Migration
             $table->decimal('altura', 5, 2)->nullable();
             $table->decimal('peso', 5, 2)->nullable();
             $table->decimal('imc', 5, 2)->nullable();
-            $table->enum('status', ['ativo', 'pendente'])->default('pendente');
+            $table->boolean('ativo')->default(true);
 
             //fks
             $table->foreignId('user_id')->unique()->constrained('users')->onDelete('cascade');            

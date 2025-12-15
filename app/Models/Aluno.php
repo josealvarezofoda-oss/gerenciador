@@ -32,6 +32,15 @@ class Aluno extends Model
                 ->withTimestamps();
     }
 
+    public function getStatusFinanceiroAttribute()
+    {
+        $mensalidade = $this->mensalidades()
+            ->whereMonth('mes_referencia', now()->month)
+            ->whereYear('mes_referencia', now()->year)
+            ->first();
+
+        return $mensalidade?->status ?? 'pendente';
+    }
 
     public function user()
     {
@@ -42,4 +51,10 @@ class Aluno extends Model
     {
         return $this->belongsTo(Plano::class);
     }
+
+    public function mensalidades()
+    {
+        return $this->hasMany(Mensalidade::class);
+    }
+
 }

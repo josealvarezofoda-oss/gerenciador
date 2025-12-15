@@ -36,6 +36,11 @@ class ExercicioController extends Controller
 
         Exercicio::create($validated);
 
+        activity_log('Exercício criado', [
+            'exercicio' => $validated['nome']
+        ]);
+
+
         return redirect()
             ->route('admin.exercicios.index')
             ->with('success', 'Exercício criado com sucesso!');
@@ -66,6 +71,12 @@ class ExercicioController extends Controller
 
         $exercicio->update($validated);
 
+        activity_log('Exercício atualizado', [
+            'exercicio_id' => $exercicio->id,
+            'nome' => $validated['nome']
+        ]);
+
+
         return redirect()
             ->route('admin.exercicios.index')
             ->with('success', 'Exercício atualizado com sucesso!');
@@ -75,6 +86,11 @@ class ExercicioController extends Controller
     {
         $exercicio = Exercicio::findOrFail($id);
         $exercicio->delete();
+
+        activity_log('Exercício deletado', [
+            'exercicio_id' => $exercicio->id,
+            'nome' => $exercicio->nome
+        ]);
 
         return redirect()
             ->route('admin.exercicios.index')
